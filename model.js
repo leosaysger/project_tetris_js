@@ -33,25 +33,28 @@ var MODEL = {
   },
 
   getRandomColumn: function() {
-    console.log("new block")
     return Math.floor(Math.random() * MODEL.WIDTH)
   },
 
   hasActivePiece: function() {
+    var active = false
+
     this.eachCell(function(cell) {
       if (cell && cell.active) {
-        return true;
-      } else {
-        return false;
+        console.log("active piece")
+        active = true;
       }
-
-    });
+    })
+    return active
   },
 
   checkNextRow: function() {
-    for (var i = MODEL.HEIGHT; i >= 0; i--) {
-      for (var j = MODEL.WIDTH; j >= 0; j--) {
-        if (MODEL.board[i][j].active) {
+    for (var i = MODEL.HEIGHT - 1; i >= 0; i--) {
+      for (var j = MODEL.WIDTH - 1; j >= 0; j--) {
+
+        var cell = MODEL.board[i][j]
+
+        if (cell && cell.active) {
           if (MODEL.board[i + 1][j] !== null) {
             MODEL.freezeBlocks();
           }
@@ -61,23 +64,25 @@ var MODEL = {
   },
 
   freezeBlocks: function() {
-    eachCell(function(cell) {
+    MODEL.eachCell(function(cell) {
       if (cell && cell.active) {
+        console.log("freezing")
         cell.active = false;
       }
     });
   },
 
   moveBlocks: function() {
+    var newBoard = MODEL.buildBoard()
+    MODEL.checkNextRow();
     MODEL.eachCell(function(cell) {
       if (cell && cell.active && cell.row < 23) {
-        var row = cell.row;
-        var col = cell.col;
-        cell.row++;
-        MODEL.board[row][col] = null
-        MODEL.board[cell.row][col] = cell;
+
+        newBoard[cell.row + 1][cell.col] = cell;
+        cell.row++
       }
     });
+    MODEL.board = newBoard
   },
 
   eachCell: function(func) {
