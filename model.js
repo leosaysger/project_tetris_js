@@ -139,12 +139,13 @@ var MODEL = {
 // rotate the active blocks
     switch(this.currentPiece) {
       case "line":
-        PIECE.rotateLine();
+        PIECES.rotateLine();
         break;
 
       default:
         return;
     }
+    MODEL.updateBoard();
   },
 
   keyListener: function(keypress) {
@@ -179,6 +180,16 @@ var MODEL = {
         func(MODEL.board[row][block], parseInt(row), parseInt(block))
       }
     }
+  },
+
+  updateBoard: function() {
+    var emptyBoard = MODEL.buildBoard();
+    MODEL.eachCell(function(cell) {
+      if (cell) {
+        emptyBoard[cell.row][cell.col] = cell;
+      }
+    });
+    MODEL.board = emptyBoard;
   }
 
 }
