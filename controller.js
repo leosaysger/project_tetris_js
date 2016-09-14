@@ -3,14 +3,16 @@ var CONTROLLER = {
   init: function() {
     MODEL.init();
     CONTROLLER.gameLoop();
+    VIEW.setEventListeners();
   },
 
   gameLoop: function() {
     setInterval(function() {
       MODEL.moveBlocks();
+      MODEL.checkFullRow();
       CONTROLLER.checkActivePiece();
       VIEW.render(MODEL.board);
-    }, 100)
+    }, 500)
 
   },
 
@@ -19,7 +21,13 @@ var CONTROLLER = {
       MODEL.addPiece();
     }
 
+  },
+
+
+  keyListener: function(keypress) {
+    MODEL.keyListener(keypress);
   }
+
 
 }
 

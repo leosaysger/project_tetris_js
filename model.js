@@ -72,26 +72,85 @@ var MODEL = {
     });
   },
 
-  moveBlocks: function() {
-    var newBoard = MODEL.buildBoard()
-    MODEL.checkNextRow();
-    MODEL.eachCell(function(cell) {
-      if (cell && cell.active && cell.row < 23) {
+  addBlankRow: function() {
+    var arr = []
+    for(var i = 0; i < MODEL.WIDTH; i++) {
+      arr.push(null);
+    }
+    MODEL.board.unshift(arr);
+  },
 
-        newBoard[cell.row + 1][cell.col] = cell;
-        cell.row++
+  checkFullRow: function() {
+    var board = MODEL.board;
+    for (var i = 0; i < board.length; i++) {
+      if (board[i].every(function(element){ return !!element;})) {
+          board.splice(i, 1);
+          MODEL.addBlankRow();
+      };
+    }
+  },
+
+  moveBlocks: function(direction) {
+    var direction = direction || "down"
+    var newBoard = MODEL.buildBoard()
+    var changeRow = 0;
+    var changeCol = 0;
+
+    if (direction === "down") { changeRow = 1 }
+    else if (direction === "left") { changeCol = -1 }
+    else if (direction === "right") { changeCol = 1 }
+
+    MODEL.checkNextRow();
+    MODEL.eachCell(function(cell, row, col) {
+      var row = parseInt(row);
+      var col = parseInt(col);
+      if (cell && cell.active && cell.row < 23) {
+        newBoard[row + changeRow][col + changeCol] = cell;
+        cell.row = row + changeRow;
+        cell.col = col + changeCol;
       } else if (cell) {
-        newBoard[cell.row][cell.col] = cell;
+        newBoard[row][col] = cell;
+        cell.row = row;
+        cell.col = col;
       }
     });
     MODEL.board = newBoard
+  },
+
+  rotate: function() {
+// rotate the active blocks
+  },
+
+  keyListener: function(keypress) {
+    switch (keypress) {
+      case 37: // left
+        MODEL.moveBlocks("left");
+        break;
+
+      case 38: // up
+        MODEL.rotate();
+        break;
+
+      case 39: // right
+        MODEL.moveBlocks("right");
+        break;
+
+      case 40: // down
+        MODEL.moveBlocks("down");
+        break;
+      case 32: //space
+        // MODEL.instantDown();
+        // break
+      default:
+        return; // exit this handler for other keys
+    }
   },
 
   eachCell: function(func) {
     var cells = []
     for (var row in MODEL.board) {
       for (var block in MODEL.board[row]) {
-        func(MODEL.board[row][block])
+        func(MODEL.board[row][block], row, block)
       }
     }
   }

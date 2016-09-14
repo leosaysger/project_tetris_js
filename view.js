@@ -1,10 +1,5 @@
 var VIEW = {
 
-  init: function() {
-
-
-  },
-
   render: function(board) {
     $board = $("#board");
     $board.empty();
@@ -18,11 +13,16 @@ var VIEW = {
         if(board[row][cell]) {
           $cell.addClass("block")
         }
-
       }
     }
+  },
 
-  }
+  setEventListeners: function() {
+  $(document).keydown(function(e) {
+    CONTROLLER.keyListener(e.keyCode);
+    e.preventDefault();
+    });
+}
 
 
 }
