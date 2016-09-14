@@ -1,24 +1,18 @@
-
-function Cell(row, col) {
+function Block(row, col, active) {
   this.row = row
   this.col = col
+  this.active = active || true
 }
 
-function Piece(coords, color) {
-  this.cells = cells
-  this.color = color
-  this.active = active
-}
 
 var MODEL = {
   WIDTH: 10,
 
   HEIGHT: 24,
 
-
   init: function() {
     this.board = this.buildBoard();
-
+    this.currentPiece = null;
   },
 
   buildBoard: function() {
@@ -33,24 +27,66 @@ var MODEL = {
   },
 
   addPiece: function() {
-    var col = getRandomColumn();
-    MODEL.board[4][col] = new Piece([new Cell(3, col)])
+    var col = this.getRandomColumn();
+    MODEL.board[4][col] = new Block(4, col)
+    currentPiece = "single";
   },
 
   getRandomColumn: function() {
+    console.log("new block")
     return Math.floor(Math.random() * MODEL.WIDTH)
   },
 
   hasActivePiece: function() {
-    for (var row in MODEL.board) {
-      for (var piece in MODEL.board[row]) {
+    this.eachCell(function(cell) {
+      if (cell && cell.active) {
+        return true;
+      } else {
+        return false;
+      }
 
-        if(MODEL.board[row][piece].active) {
-          return true
+    });
+  },
+
+  checkNextRow: function() {
+    for (var i = MODEL.HEIGHT; i >= 0; i--) {
+      for (var j = MODEL.WIDTH; j >= 0; j--) {
+        if (MODEL.board[i][j].active) {
+          if (MODEL.board[i + 1][j] !== null) {
+            MODEL.freezeBlocks();
+          }
         }
-
       }
     }
-    return false
+  },
+
+  freezeBlocks: function() {
+    eachCell(function(cell) {
+      if (cell && cell.active) {
+        cell.active = false;
+      }
+    });
+  },
+
+  moveBlocks: function() {
+    MODEL.eachCell(function(cell) {
+      if (cell && cell.active && cell.row < 23) {
+        var row = cell.row;
+        var col = cell.col;
+        cell.row++;
+        MODEL.board[row][col] = null
+        MODEL.board[cell.row][col] = cell;
+      }
+    });
+  },
+
+  eachCell: function(func) {
+    var cells = []
+    for (var row in MODEL.board) {
+      for (var block in MODEL.board[row]) {
+        func(MODEL.board[row][block])
+      }
+    }
   }
+
 }

@@ -1,18 +1,24 @@
 var CONTROLLER = {
 
-  init: function(){
+  init: function() {
     MODEL.init();
+    CONTROLLER.gameLoop();
+  },
 
-    if (!MODEL.hasActivePiece()){
+  gameLoop: function() {
+    setInterval(function() {
+      MODEL.moveBlocks();
+      CONTROLLER.checkActivePiece();
+      VIEW.render(MODEL.board);
+    }, 1000)
+
+  },
+
+  checkActivePiece: function() {
+    if (!MODEL.hasActivePiece()) {
       MODEL.addPiece();
-
     }
 
-    setInterval(function() {
-
-      VIEW.render(MODEL.board);
-
-    }, 1000)
   }
 
 }

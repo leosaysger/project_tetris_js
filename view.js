@@ -7,7 +7,7 @@ var VIEW = {
 
   render: function(board) {
     $board = $("#board");
-
+    $board.empty();
     for(var row = 4; row < board.length; row++) {
       $board.append($("<div class='row'></div>"));
 
@@ -16,7 +16,7 @@ var VIEW = {
         $('.row').last().append($cell);
 
         if(board[row][cell]) {
-          $cell.addClass("piece")
+          $cell.addClass("block")
         }
 
       }
@@ -26,4 +26,3 @@ var VIEW = {
 
 
 }
-
