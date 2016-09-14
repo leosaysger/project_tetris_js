@@ -10,7 +10,7 @@ var CONTROLLER = {
       MODEL.moveBlocks();
       CONTROLLER.checkActivePiece();
       VIEW.render(MODEL.board);
-    }, 1000)
+    }, 100)
 
   },
 

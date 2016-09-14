@@ -55,7 +55,7 @@ var MODEL = {
         var cell = MODEL.board[i][j]
 
         if (cell && cell.active) {
-          if (MODEL.board[i + 1][j] !== null) {
+          if (!MODEL.board[i + 1] || MODEL.board[i + 1][j] !== null) {
             MODEL.freezeBlocks();
           }
         }
@@ -80,6 +80,8 @@ var MODEL = {
 
         newBoard[cell.row + 1][cell.col] = cell;
         cell.row++
+      } else if (cell) {
+        newBoard[cell.row][cell.col] = cell;
       }
     });
     MODEL.board = newBoard
