@@ -29,7 +29,7 @@ var MODEL = {
   addPiece: function() {
     var col = this.getRandomColumn();
 
-    PIECES.buildSquare(col);
+    PIECES.RandomPiece(col);
     //MODEL.board[4][col] = new Block(4, col)
     currentPiece = "single";
   },
@@ -95,7 +95,7 @@ var MODEL = {
     var freeSpace = true
     MODEL.eachCell(function(cell, row, col) {
       if (cell && cell.active) {
-        if(MODEL.board[row][col + changeCol] && !MODEL.board[row][col + changeCol].active) {
+        if(MODEL.board[row][col+changeCol] === undefined || (MODEL.board[row][col + changeCol] && !MODEL.board[row][col + changeCol].active)) {
           freeSpace = false
         }
       }
