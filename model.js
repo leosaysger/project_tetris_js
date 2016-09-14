@@ -1,7 +1,9 @@
-function Block(row, col, active) {
+function Block(row, col, color, rotState, active) {
   this.row = row
   this.col = col
   this.active = active || true
+  this.color = color
+  this.rotState = rotState || 0
 }
 
 
@@ -31,7 +33,6 @@ var MODEL = {
 
     PIECES.RandomPiece(col);
     //MODEL.board[4][col] = new Block(4, col)
-    currentPiece = "single";
   },
 
   getRandomColumn: function() {
@@ -136,6 +137,14 @@ var MODEL = {
 
   rotate: function() {
 // rotate the active blocks
+    switch(this.currentPiece) {
+      case "line":
+        PIECE.rotateLine();
+        break;
+
+      default:
+        return;
+    }
   },
 
   keyListener: function(keypress) {

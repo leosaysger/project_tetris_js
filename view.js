@@ -11,7 +11,10 @@ var VIEW = {
         $('.row').last().append($cell);
 
         if(board[row][cell]) {
+        console.log(board[row][cell].color)
+
           $cell.addClass("block")
+              .css("background", board[row][cell].color)
         }
       }
     }
