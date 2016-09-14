@@ -28,7 +28,9 @@ var MODEL = {
 
   addPiece: function() {
     var col = this.getRandomColumn();
-    MODEL.board[4][col] = new Block(4, col)
+
+    PIECES.buildSquare(col);
+    //MODEL.board[4][col] = new Block(4, col)
     currentPiece = "single";
   },
 
@@ -41,7 +43,6 @@ var MODEL = {
 
     this.eachCell(function(cell) {
       if (cell && cell.active) {
-        console.log("active piece")
         active = true;
       }
     })
@@ -55,7 +56,7 @@ var MODEL = {
         var cell = MODEL.board[i][j]
 
         if (cell && cell.active) {
-          if (!MODEL.board[i + 1] || MODEL.board[i + 1][j] !== null) {
+          if (!MODEL.board[i + 1] || (MODEL.board[i + 1][j] && !MODEL.board[i + 1][j].active) ) {
             MODEL.freezeBlocks();
           }
         }
@@ -66,7 +67,6 @@ var MODEL = {
   freezeBlocks: function() {
     MODEL.eachCell(function(cell) {
       if (cell && cell.active) {
-        console.log("freezing")
         cell.active = false;
       }
     });
@@ -90,6 +90,20 @@ var MODEL = {
     }
   },
 
+  canMove: function(changeCol) {
+    if(changeCol === 0) { return true }
+    var freeSpace = true
+    MODEL.eachCell(function(cell, row, col) {
+      if (cell && cell.active) {
+        if(MODEL.board[row][col + changeCol] && !MODEL.board[row][col + changeCol].active) {
+          freeSpace = false
+        }
+      }
+    });
+
+    return freeSpace
+  },
+
   moveBlocks: function(direction) {
     var direction = direction || "down"
     var newBoard = MODEL.buildBoard()
@@ -101,10 +115,13 @@ var MODEL = {
     else if (direction === "right") { changeCol = 1 }
 
     MODEL.checkNextRow();
+
+    if(!MODEL.canMove(changeCol)) { return }
+
     MODEL.eachCell(function(cell, row, col) {
-      var row = parseInt(row);
-      var col = parseInt(col);
-      if (cell && cell.active && cell.row < 23) {
+      if (cell && cell.active) {
+
+
         newBoard[row + changeRow][col + changeCol] = cell;
         cell.row = row + changeRow;
         cell.col = col + changeCol;
@@ -150,7 +167,7 @@ var MODEL = {
     var cells = []
     for (var row in MODEL.board) {
       for (var block in MODEL.board[row]) {
-        func(MODEL.board[row][block], row, block)
+        func(MODEL.board[row][block], parseInt(row), parseInt(block))
       }
     }
   }

@@ -7,12 +7,16 @@ var CONTROLLER = {
   },
 
   gameLoop: function() {
+    var counter = counter || 0
     setInterval(function() {
-      MODEL.moveBlocks();
+      if(counter % 2 === 0) {
+        MODEL.moveBlocks();
+      }
       MODEL.checkFullRow();
       CONTROLLER.checkActivePiece();
       VIEW.render(MODEL.board);
-    }, 500)
+      counter++
+    }, 200)
 
   },
 
