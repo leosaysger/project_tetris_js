@@ -75,11 +75,11 @@ var PIECES = {
 
 
   RandomPiece: function(col) {
-    //
-    // var shapes = (["buildSquare", "buildZ", "buildS", "buildL", "buildJ", "buildLine", "buildT"]);
-    // var randNum = Math.floor(Math.random() * shapes.length);
-    // PIECES[shapes[randNum]](col);
-    PIECES["buildLine"](col);
+
+    var shapes = (["buildSquare", "buildZ", "buildS", "buildL", "buildJ", "buildLine", "buildT"]);
+    var randNum = Math.floor(Math.random() * shapes.length);
+    PIECES[shapes[randNum]](col);
+    // PIECES["buildL"](col);
   },
 
   gatherActivePieces: function() {
@@ -130,7 +130,7 @@ var PIECES = {
 
     for (var i in pieces) {
       pieces[i].rotState++;
-        if (pieces[i].rotState === 2) {
+        if (pieces[i].rotState === 4) {
           pieces[i].rotState = 0
         }
     }
@@ -138,21 +138,35 @@ var PIECES = {
     switch (pieces[0].rotState) {
       // flat to standing
       case 0:
-        pieces[0].row -= 2
-        pieces[0].col += 2
-        pieces[1].row -= 1
+        pieces[0].row += 2
+        pieces[1].row += 1
         pieces[1].col += 1
-        pieces[3].row += 1
+        pieces[3].row -= 1
         pieces[3].col -= 1
         break;
       // standing to flat
       case 1:
-        pieces[0].row += 2
-        pieces[0].col -= 2
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[2].row -= 1
+        pieces[2].col -= 1
+        pieces[3].col -= 2
+        break;
+
+      case 2:
+        pieces[0].row -= 1
+        pieces[0].col += 1
+        pieces[2].row += 1
+        pieces[2].col -= 1
+        pieces[3].row -= 2
+        break;
+
+      case 3:
+        pieces[0].col += 2
         pieces[1].row += 1
-        pieces[1].col -= 1
+        pieces[1].col += 1
         pieces[3].row -= 1
-        pieces[3].col += 1
+        pieces[3].col -= 1
         break;
     }
   },

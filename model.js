@@ -142,6 +142,10 @@ var MODEL = {
         PIECES.rotateLine();
         break;
 
+      case "l":
+        PIECES.rotateL();
+        break;
+
       default:
         return;
     }
