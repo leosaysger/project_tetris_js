@@ -9,8 +9,9 @@ function Block(row, col, color, rotState, active) {
 
 var MODEL = {
   WIDTH: 10,
-
   HEIGHT: 24,
+  score: 0,
+  clearedRows: 0,
 
   init: function() {
     this.board = this.buildBoard();
@@ -30,9 +31,7 @@ var MODEL = {
 
   addPiece: function() {
     var col = this.getRandomColumn();
-
     PIECES.RandomPiece(col);
-    //MODEL.board[4][col] = new Block(4, col)
   },
 
   getRandomColumn: function() {
@@ -53,11 +52,9 @@ var MODEL = {
   checkNextRow: function() {
     for (var i = MODEL.HEIGHT - 1; i >= 0; i--) {
       for (var j = MODEL.WIDTH - 1; j >= 0; j--) {
-
         var cell = MODEL.board[i][j]
-
         if (cell && cell.active) {
-          if (!MODEL.board[i + 1] || (MODEL.board[i + 1][j] && !MODEL.board[i + 1][j].active) ) {
+          if (!MODEL.board[i + 1] || (MODEL.board[i + 1][j] && !MODEL.board[i + 1][j].active)) {
             MODEL.freezeBlocks();
           }
         }
@@ -75,7 +72,7 @@ var MODEL = {
 
   addBlankRow: function() {
     var arr = []
-    for(var i = 0; i < MODEL.WIDTH; i++) {
+    for (var i = 0; i < MODEL.WIDTH; i++) {
       arr.push(null);
     }
     MODEL.board.unshift(arr);
@@ -83,20 +80,29 @@ var MODEL = {
 
   checkFullRow: function() {
     var board = MODEL.board;
+    var tetris = 0
     for (var i = 0; i < board.length; i++) {
-      if (board[i].every(function(element){ return !!element;})) {
-          board.splice(i, 1);
-          MODEL.addBlankRow();
+      if (board[i].every(function(element) {
+          return (element && !element.active);
+        })) {
+        board.splice(i, 1);
+        MODEL.addBlankRow();
+        MODEL.clearedRows++;
+        tetris++;
       };
     }
+    MODEL.score += (tetris * tetris) * 10;
+    if (tetris === 4) { MODEL.score += 140}
   },
 
   canMove: function(changeCol) {
-    if(changeCol === 0) { return true }
+    if (changeCol === 0) {
+      return true
+    }
     var freeSpace = true
     MODEL.eachCell(function(cell, row, col) {
       if (cell && cell.active) {
-        if(MODEL.board[row][col+changeCol] === undefined || (MODEL.board[row][col + changeCol] && !MODEL.board[row][col + changeCol].active)) {
+        if (MODEL.board[row][col + changeCol] === undefined || (MODEL.board[row][col + changeCol] && !MODEL.board[row][col + changeCol].active)) {
           freeSpace = false
         }
       }
@@ -111,13 +117,18 @@ var MODEL = {
     var changeRow = 0;
     var changeCol = 0;
 
-    if (direction === "down") { changeRow = 1 }
-    else if (direction === "left") { changeCol = -1 }
-    else if (direction === "right") { changeCol = 1 }
+    if (direction === "down") {
+      changeRow = 1
+      MODEL.checkNextRow();
+    } else if (direction === "left") {
+      changeCol = -1
+    } else if (direction === "right") {
+      changeCol = 1
+    }
 
-    MODEL.checkNextRow();
-
-    if(!MODEL.canMove(changeCol)) { return }
+    if (!MODEL.canMove(changeCol)) {
+      return
+    }
 
     MODEL.eachCell(function(cell, row, col) {
       if (cell && cell.active) {
@@ -136,14 +147,26 @@ var MODEL = {
   },
 
   rotate: function() {
-// rotate the active blocks
-    switch(this.currentPiece) {
+    // rotate the active blocks
+    switch (this.currentPiece) {
       case "line":
         PIECES.rotateLine();
         break;
 
       case "l":
         PIECES.rotateL();
+        break;
+      case "j":
+        PIECES.rotateJ();
+        break;
+      case "s":
+        PIECES.rotateS();
+        break;
+      case "z":
+        PIECES.rotateZ();
+        break;
+      case "t":
+        PIECES.rotateT();
         break;
 
       default:

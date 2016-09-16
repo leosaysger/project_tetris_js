@@ -79,7 +79,7 @@ var PIECES = {
     var shapes = (["buildSquare", "buildZ", "buildS", "buildL", "buildJ", "buildLine", "buildT"]);
     var randNum = Math.floor(Math.random() * shapes.length);
     PIECES[shapes[randNum]](col);
-    // PIECES["buildL"](col);
+    // PIECES["buildLine"](col)
   },
 
   gatherActivePieces: function() {
@@ -93,15 +93,21 @@ var PIECES = {
   },
 
 
+
   rotateLine: function() {
     var pieces = PIECES.gatherActivePieces()
 
+    //checkes if next to walls before rotation.
+    if (pieces[0].rotState === 0 && (pieces[0].col + 2 > MODEL.WIDTH || pieces[0].col - 2 < 0)) {
+      return
+    }
     for (var i in pieces) {
       pieces[i].rotState++;
-        if (pieces[i].rotState === 2) {
-          pieces[i].rotState = 0
-        }
+      if (pieces[i].rotState === 2) {
+        pieces[i].rotState = 0
+      }
     }
+
 
     switch (pieces[0].rotState) {
       // flat to standing
@@ -113,7 +119,7 @@ var PIECES = {
         pieces[3].row += 1
         pieces[3].col -= 1
         break;
-      // standing to flat
+        // standing to flat
       case 1:
         pieces[0].row += 2
         pieces[0].col -= 2
@@ -128,11 +134,15 @@ var PIECES = {
   rotateL: function() {
     var pieces = PIECES.gatherActivePieces()
 
+    if ((pieces[0].rotState === 2 && pieces[1].col + 1 >= MODEL.WIDTH) ||
+      (pieces[0].rotState === 0 && pieces[0].col - 1 < 0)) {
+      return
+    }
     for (var i in pieces) {
       pieces[i].rotState++;
-        if (pieces[i].rotState === 4) {
-          pieces[i].rotState = 0
-        }
+      if (pieces[i].rotState === 4) {
+        pieces[i].rotState = 0
+      }
     }
 
     switch (pieces[0].rotState) {
@@ -144,7 +154,7 @@ var PIECES = {
         pieces[3].row -= 1
         pieces[3].col -= 1
         break;
-      // standing to flat
+        // standing to flat
       case 1:
         pieces[0].row += 1
         pieces[0].col += 1
@@ -170,36 +180,176 @@ var PIECES = {
         break;
     }
   },
+
   rotateJ: function() {
     var pieces = PIECES.gatherActivePieces()
 
+    if ((pieces[0].rotState === 0 && pieces[1].col + 1 >= MODEL.WIDTH) ||
+      (pieces[0].rotState === 2 && pieces[0].col - 1 < 0)) {
+      return
+    }
+
     for (var i in pieces) {
       pieces[i].rotState++;
-        if (pieces[i].rotState === 2) {
-          pieces[i].rotState = 0
-        }
+      if (pieces[i].rotState === 4) {
+        pieces[i].rotState = 0
+      }
     }
 
     switch (pieces[0].rotState) {
-      // flat to standing
+
       case 0:
-        pieces[0].row -= 2
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[2].row -= 1
+        pieces[2].col -= 1
+        pieces[3].col -= 2
+        break;
+
+      case 1:
+        pieces[0].row += 2
+        pieces[1].row += 1
+        pieces[1].col += 1
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+
+      case 2:
         pieces[0].col += 2
+        pieces[1].row += 1
+        pieces[1].col += 1
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+
+      case 3:
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[1].row += 2
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+    }
+  },
+  rotateZ: function() {
+    var pieces = PIECES.gatherActivePieces()
+
+    if ((pieces[0].rotState === 1 && pieces[1].col - 1 < 0)) {
+      return
+    }
+
+    for (var i in pieces) {
+      pieces[i].rotState++;
+      if (pieces[i].rotState === 2) {
+        pieces[i].rotState = 0
+      }
+    }
+
+    switch (pieces[0].rotState) {
+
+      case 0:
+        pieces[0].row += 1
+        pieces[0].col -= 2
+        pieces[2].col -= 1
+        pieces[1].row += 1
+        pieces[3].col += 1
+        break;
+
+      case 1:
+        pieces[0].row -= 1
+        pieces[0].col += 2
+        pieces[1].col += 1
+        pieces[2].row -= 1
+        pieces[3].col -= 1
+        break;
+    }
+  },
+
+  rotateS: function() {
+    var pieces = PIECES.gatherActivePieces()
+
+    if ((pieces[0].rotState === 1 && pieces[1].col - 1 < 0)) {
+      return
+    }
+
+    for (var i in pieces) {
+      pieces[i].rotState++;
+      if (pieces[i].rotState === 2) {
+        pieces[i].rotState = 0
+      }
+    }
+
+    switch (pieces[0].rotState) {
+
+      case 0:
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[3].col -= 2
+        pieces[2].col -= 1
+        pieces[2].row += 1
+        break;
+
+      case 1:
+        pieces[1].row -= 1
+        pieces[1].col -= 1
+        pieces[2].col += 2
+        pieces[3].col += 1
+        pieces[3].row -= 1
+        break;
+    }
+  },
+  rotateT: function() {
+    var pieces = PIECES.gatherActivePieces()
+
+    if ((pieces[0].rotState === 1 && pieces[0].col + 1 >= MODEL.WIDTH) ||
+      (pieces[0].rotState === 3 && pieces[0].col - 1 < 0)) {
+      return
+    }
+
+    for (var i in pieces) {
+      pieces[i].rotState++;
+      if (pieces[i].rotState === 4) {
+        pieces[i].rotState = 0
+      }
+    }
+
+    switch (pieces[0].rotState) {
+
+      case 0:
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[2].row += 1
+        pieces[2].col -= 1
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+
+      case 1:
+        pieces[0].row -= 1
+        pieces[0].col += 1
+        pieces[2].row += 1
+        pieces[2].col -= 1
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+
+      case 2:
+        pieces[1].row -= 1
+        pieces[1].col += 1
+        pieces[0].row += 1
+        pieces[0].col += 1
+        pieces[3].row -= 1
+        pieces[3].col -= 1
+        break;
+
+      case 3:
+        pieces[0].row += 1
+        pieces[0].col += 1
         pieces[1].row -= 1
         pieces[1].col += 1
         pieces[3].row += 1
         pieces[3].col -= 1
         break;
-      // standing to flat
-      case 1:
-        pieces[0].row += 2
-        pieces[0].col -= 2
-        pieces[1].row += 1
-        pieces[1].col -= 1
-        pieces[3].row -= 1
-        pieces[3].col += 1
-        break;
     }
-  },
-
+  }
 }
